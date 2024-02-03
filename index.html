@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping & Todo List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #container {
+            width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-top: 0;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #f0f0f0;
+        }
+
+        #shopping-list,
+        #todo-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Shopping List</h1>
+        <input type="text" id="shopping-input" placeholder="Enter item">
+        <button onclick="addShoppingItem()">Add Item</button>
+        <button onclick="clearShoppingList()">Clear List</button>
+        <p>Total Shopping Items: <span id="total-shopping-items">0</span></p>
+        <ul id="shopping-list">
+            <!-- Shopping list items will be dynamically added here -->
+        </ul>
+    </div>
+
+    <div id="container">
+        <h1>To-Do List</h1>
+        <input type="text" id="todo-input" placeholder="Enter task">
+        <button onclick="addTodoItem()">Add Task</button>
+        <button onclick="clearTodoList()">Clear List</button>
+        <p>Total Tasks: <span id="total-todo-items">0</span></p>
+        <ul id="todo-list">
+            <!-- To-do list items will be dynamically added here -->
+        </ul>
+    </div>
+
+    <script>
+        // Array to store shopping list items
+        let shoppingItems = [];
+
+        // Function to add item to the shopping list
+        function addItem() {
+            let itemInput = document.getElementById("item-input");
+            let newItem = itemInput.value.trim();
+
+            if (newItem !== "") {
+                // Add item to the array
+                shoppingItems.push({ name: newItem, completed: false });
+
+                // Update the shopping list displayed on the page
+                updateShoppingList();
+
+                // Clear the input field
+                itemInput.value = "";
+            }
+        }
+
+        // Function to remove item from the shopping list
+        function removeItem(index) {
+            shoppingItems.splice(index, 1); // Remove item from array
+            updateShoppingList(); // Update the displayed list
+        }
+
+        // Function to toggle completion status of an item
+        function toggleCompletion(index) {
+            shoppingItems[index].completed = !shoppingItems[index].completed;
+            updateShoppingList();
+        }
+
+        // Function to clear the entire shopping list
+        function clearList() {
+            shoppingItems = []; // Empty the array
+            updateShoppingList(); // Update the displayed list
+        }
+
+        // Function to update the shopping list displayed on the page
+        function updateShoppingList() {
+            let shoppingList = document.getElementById("shopping-list");
+            let totalItemsSpan = document.getElementById("total-items");
+            shoppingList.innerHTML = ""; // Clear the current list
+            let totalItems = 0;
+
+            // Add each item to the list
+            shoppingItems.forEach(function(item, index) {
+                let li = document.createElement("li");
+                let itemNameSpan = document.createElement("span");
+                itemNameSpan.textContent = item.name;
+                if (item.completed) {
+                    itemNameSpan.classList.add("completed");
+                }
+
+                // Add a button to toggle completion status
+                let toggleButton = document.createElement("button");
+                toggleButton.textContent = item.completed ? "Uncompleted" : "Completed";
+                toggleButton.onclick = function() {
+                    toggleCompletion(index);
+                };
+
+                // Add a button to remove the item
+                let removeButton = document.createElement("button");
+                removeButton.textContent = "Remove";
+                removeButton.onclick = function() {
+                    removeItem(index);
+                };
+
+                li.appendChild(itemNameSpan); // Add the item name to the list item
+                li.appendChild(toggleButton); // Add the toggle button to the list item
+                li.appendChild(removeButton); // Add the remove button to the list item
+                shoppingList.appendChild(li);
+                totalItems++;
+            });
+
+            // Update the total items count
+            totalItemsSpan.textContent = totalItems;
+        }
+    </script>
+</body>
+</html>
